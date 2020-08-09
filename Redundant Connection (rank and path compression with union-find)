@@ -1,0 +1,44 @@
+
+class Solution {
+    public int[] findRedundantConnection(int[][] edges) {
+        
+        int parent[] = new int[edges.length+1];
+        for(int i=1; i<= edges.length; i++)
+            parent[i] = i;
+        
+        int rank[] = new int[edges.length+1];
+        Arrays.fill(rank, 0);
+        
+        for(int edge[] : edges){
+            
+            int source = edge[0];
+            int dest = edge[1];
+            
+            int x = find(parent, rank, source);
+            int y = find(parent, rank, dest);
+            
+            if(x == y)
+                return edge;
+            
+            union(parent, rank, x, y); 
+        } 
+        return new int[0];
+    }
+    private int find(int parent[], int rank[], int vertex){
+        if(parent[vertex] != vertex){
+           parent[vertex] = find(parent, rank, parent[vertex]); 
+        }
+        return parent[vertex];
+    }
+    private void union(int parent[], int rank[], int x_set, int y_set){
+        
+        if(rank[x_set] > rank[y_set])
+            parent[y_set] = x_set;
+        else if(rank[y_set] > rank[x_set])
+            parent[x_set] = y_set;
+        else{
+            parent[y_set] = x_set;
+            rank[x_set]++;
+        }
+    }
+}
