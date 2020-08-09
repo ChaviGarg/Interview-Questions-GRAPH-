@@ -1,0 +1,38 @@
+class Solution {
+    int[] res = null;
+    public int[] findRedundantConnection(int[][] edges) {
+        
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        
+        for(int i=1; i<= edges.length; i++){
+            adjMap.put(i, new ArrayList<>());
+        }
+        for(int edge[] : edges){
+            int u = edge[0], v = edge[1];
+            if(dfs(u,v,-1,adjMap))
+                res = edge;
+            else{
+                adjMap.get(edge[0]).add(edge[1]);
+                adjMap.get(edge[1]).add(edge[0]);
+            }    
+        }
+       return res;  
+       
+    }
+     private boolean dfs(int u, int v, int parent, Map<Integer, List<Integer>> adjMap){
+        
+        if(u == v)
+            return true;
+        List<Integer> neighbours = adjMap.get(u);
+       
+        for(int i : neighbours){
+            if(i == parent)
+               continue;
+            boolean isCycle = dfs(i, v, u, adjMap);
+            if(isCycle){
+               return true;
+            }    
+        }       
+        return false;
+    }
+}
