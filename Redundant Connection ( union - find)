@@ -1,0 +1,26 @@
+class Solution {
+    public int[] findRedundantConnection(int[][] edges) {
+        
+        int parent[] = new int[edges.length+1];
+        Arrays.fill(parent, -1);
+        for(int edge[] : edges){
+            int source = edge[0];
+            int dest = edge[1];
+            int x = find(parent, source);
+            int y = find(parent, dest);
+            if(x == y){
+                return edge;
+            }
+            union(parent, x, y);
+        } 
+        return new int[0];
+    }
+    private int find(int parent[], int i){
+        if(parent[i] == -1)
+            return i;
+        return find(parent, parent[i]);
+    }
+    private void union(int parent[], int xset, int yset){    
+        parent[xset] = yset;   
+    }
+}
