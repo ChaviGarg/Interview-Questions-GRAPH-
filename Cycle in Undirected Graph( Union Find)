@@ -1,0 +1,27 @@
+public class Solution {
+    public int solve(int A, int[][] B) {
+        
+       int parent[] = new int[A+1];
+       Arrays.fill(parent, -1);
+       
+       for(int arr[] : B){
+           int source = arr[0];
+           int dest = arr[1];
+           int x = find(parent, source);
+           int y = find(parent, dest);
+           if(x == y)
+              return 1;
+           union(parent, x, y);
+       }
+       return 0;
+    }
+    private int find(int parent[], int i){
+        if(parent[i] == -1)
+           return i;
+        return find(parent, parent[i]);
+    }
+    private void union(int parent[], int xset, int yset){
+        
+        parent[xset] = yset;
+    }
+}  
