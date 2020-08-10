@@ -1,0 +1,45 @@
+class Solution {
+    public int[] findRedundantDirectedConnection(int[][] edges) {
+        
+        int parent[] = new int[edges.length+1];
+        for(int i=1; i <= edges.length; i++){
+            parent[i] = i;
+        }
+        int[] parentIssueEdge = null, cycleIssueEdge = null;
+        for(int edge[] : edges){
+            int source = edge[0], dest = edge[1];
+            int x = find(parent, source);
+            int y = find(parent, dest);
+             // multiple parent issue
+            if(dest != y)                     
+                parentIssueEdge = edge;
+             // cycle issue
+            else if(x == y)                   
+                cycleIssueEdge = edge;
+            else
+                union(parent, x, y);
+        }
+        if( parentIssueEdge == null)
+            return cycleIssueEdge;
+        if(cycleIssueEdge == null)
+            return parentIssueEdge;
+        
+        // both issues exists
+        // When we find the second edge of parentIssueEdge, we didn't update y's parent, that means we keep the first edge and ignore the second edge when updating the roots[] array. If in this case we still find a cycleIssueEdge , that means we ignore the wrong edge, because all the edges excluding the ignored edge forms a loop, so we should keep the second edge and remove the first one.
+        for(int edge[] : edges){
+            if(edge[1] == parentIssueEdge[1])
+                return edge;
+        }
+       return new int[0]; 
+    }
+    // Path Compression
+    private int find(int parent[], int vertex){
+        if(parent[vertex] != vertex)
+            parent[vertex] = find(parent, parent[vertex]);
+        return parent[vertex];
+    }
+    private void union(int parent[], int x_set, int y_set){
+        
+        parent[y_set] = x_set;
+    }
+}
