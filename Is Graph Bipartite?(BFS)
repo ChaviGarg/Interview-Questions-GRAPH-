@@ -2,7 +2,6 @@ class Solution {
     public boolean isBipartite(int[][] graph) {
         
         int colour[] = new int[graph.length];
-        boolean visited[] = new boolean[graph.length];
         Arrays.fill(colour, -1);
         
         Map<Integer, List<Integer>> adjMap = new HashMap<>();
@@ -19,16 +18,16 @@ class Solution {
         }
         for(int i : adjMap.keySet()){
             
-            if(! visited[i]){
-               boolean isBipartite = checkBipartite(adjMap, visited, colour, i);
-               if(! isBipartite) 
-                   return false;
-            }    
+               if(colour[i] == -1){
+                    boolean isBipartite = checkBipartite(adjMap, colour, i);
+                    if(! isBipartite) 
+                        return false;  
+               }    
         }
        
         return true;
     }
-    boolean checkBipartite(Map<Integer, List<Integer>> adjMap, boolean visited[], int colour[], int x){
+    boolean checkBipartite(Map<Integer, List<Integer>> adjMap, int colour[], int x){
         
         Queue<Integer> q = new LinkedList<>();
         
@@ -37,17 +36,14 @@ class Solution {
        
         while(! q.isEmpty()){
             int n = q.poll();
-            visited[n] = true;
             List<Integer> neighbours = adjMap.get(n);
             for(int neighbour : neighbours){
-                if(colour[neighbour] == -1)
+                if(colour[neighbour] == -1){
                     colour[neighbour] = Math.abs(colour[n] - 1);
+                    q.offer(neighbour);
+                }    
                 else if(colour[neighbour] != -1 && colour[neighbour] == colour[n])
                     return false;
-                if(! visited[neighbour]){
-                   q.offer(neighbour);
-                   visited[neighbour] = true; 
-                }    
             }
         }
        return true; 
