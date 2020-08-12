@@ -1,0 +1,55 @@
+class Solution {
+    public boolean isBipartite(int[][] graph) {
+        
+        int colour[] = new int[graph.length];
+        boolean visited[] = new boolean[graph.length];
+        Arrays.fill(colour, -1);
+        
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        
+        for(int i=0; i < graph.length; i++){
+            adjMap.put(i, new ArrayList<>());
+        }
+        int index = 0;
+        for(int edge[] : graph){
+            for(int i=0; i<edge.length; i++){
+                adjMap.get(index).add(edge[i]);
+            }
+            index++;
+        }
+        for(int i : adjMap.keySet()){
+            
+               if(colour[i] == -1){
+                    boolean isBipartite = checkBipartite(adjMap, colour, i, -1, visited);
+                    if(! isBipartite) 
+                        return false;  
+               }    
+        }
+       
+        return true;
+    }
+    boolean checkBipartite(Map<Integer, List<Integer>> adjMap, int colour[], int x, int parent, boolean visited[]){
+        
+        if(colour[x] == -1)
+             colour[x] = 1;
+    
+        List<Integer> neighbours = adjMap.get(x);
+    
+        for(int neighbour : neighbours){
+            if(! visited[neighbour]){
+            visited[neighbour] = true;    
+            if(colour[neighbour] == -1){
+                colour[neighbour] = Math.abs(colour[x] - 1);
+            }   
+                boolean isBipartite = checkBipartite(adjMap, colour, neighbour, x, visited);
+                if(! isBipartite) 
+                        return false; 
+            }
+            else if(parent != -1 && (colour[x] == colour[neighbour])){
+                return false;
+            }
+               
+        }
+       return true; 
+    }
+}
