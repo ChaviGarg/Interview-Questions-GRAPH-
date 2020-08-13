@@ -1,0 +1,53 @@
+class Solution {
+    
+    public List<String> findItinerary(List<List<String>> tickets) {
+        
+        Map<String, List<String>> adjMap = new HashMap<>();
+        
+        for(List<String> list : tickets){
+            String sourceTicket = list.get(0);
+            String destTicket = list.get(1);
+            
+            if(! adjMap.containsKey(sourceTicket)){
+                adjMap.put(sourceTicket, new ArrayList<>());
+            }    
+            adjMap.get(sourceTicket).add(destTicket);
+        }
+                       
+        for(String source : adjMap.keySet()){
+            Collections.sort(adjMap.get(source)); // O(n log n)
+        }
+        Stack<String> stack = new Stack<>();
+        List<String> result = new ArrayList<>();
+        dfs(adjMap, "JFK", stack, result);
+        Collections.reverse(result);      // O(n)
+                                   
+        return result;
+    }
+    private void dfs( Map<String, List<String>> adjMap, String source, Stack<String> stack, List<String> result){
+        
+        stack.push(source);
+        
+        List<String> neighbours = adjMap.get(source);
+    
+        while((neighbours != null && neighbours.isEmpty()) || (neighbours == null && ! stack.empty())){
+            if(! stack.empty()){
+               result.add(stack.pop()); 
+            }    
+            if(! stack.empty())    
+               neighbours = adjMap.get(stack.peek());  
+            if(stack.empty())
+                return;
+        }
+        if(neighbours == null)
+            return;
+        
+        Iterator<String> itr = neighbours.iterator();
+        while(itr.hasNext()){
+            String neighbour = itr.next();
+            itr.remove();      // O(n)
+            dfs(adjMap, neighbour, stack, result);
+        }
+        
+    }
+} 
