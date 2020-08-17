@@ -1,0 +1,60 @@
+class Solution {
+    public int networkDelayTime(int[][] times, int N, int K) {
+        
+        boolean shortestPathSet[] = new boolean[N+1];
+        int dist[] = new int[N+1];
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        for(int i=1; i <= N; i++){
+            adjMap.put(i, new ArrayList<>());
+        }
+        for(int t[] : times){
+            adjMap.get(t[0]).add(t[1]);
+        }
+        for(int i=1; i <= N; i++)
+            dist[i] = Integer.MAX_VALUE;
+        
+        dist[K] = 0;
+        
+        for(int i=1; i <= N; i++){
+            int u = minDistance(dist, shortestPathSet, N);
+            shortestPathSet[u] = true;
+            List<Integer> neighbours = adjMap.get(u);
+            if(neighbours != null){
+                  for(int v : neighbours){
+                     int edgeWeight = findEdgeWeight(u,v, times);
+                     if(edgeWeight != -1 && ! shortestPathSet[v] && dist[u] != Integer.MAX_VALUE && (dist[u] + edgeWeight < dist[v])){
+                         dist[v] = dist[u] + edgeWeight;
+                     }
+                  }
+            }    
+        }
+        int max = Integer.MIN_VALUE;
+        for(int i=1; i <= N; i++){
+            max = Math.max(dist[i], max);
+        }
+        
+        return max == Integer.MAX_VALUE ? -1 : max;
+    }
+    private int minDistance(int dist[], boolean shortestPathSet[], int N){
+        
+        int min = Integer.MAX_VALUE;
+        int minDisVertex = 1;
+        for(int i=1; i <= N; i++){
+            if(! shortestPathSet[i]){
+                if(min > dist[i]){
+                    min = dist[i];
+                    minDisVertex = i;
+                }
+            }    
+        }
+        return minDisVertex;
+    }
+    private int findEdgeWeight(int u, int v, int[][] times){
+        
+        for(int t[] : times){
+            if(t[0] == u && t[1] == v)
+                return t[2];
+        }
+        return -1;
+    }
+} // O(n2)-> worst case(complete graph)
