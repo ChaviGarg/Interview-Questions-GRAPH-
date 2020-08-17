@@ -1,0 +1,33 @@
+class Solution {
+    public int networkDelayTime(int[][] times, int N, int K) {
+        
+        int dist[] = new int[N+1];
+        
+        for(int i=1; i <= N ; i++){
+            dist[i] = Integer.MAX_VALUE;
+        }
+        
+        dist[K] = 0;
+        
+        for(int i=1; i < N ; i++){
+            
+            for(int time[] : times){
+                if(dist[time[0]] !=Integer.MAX_VALUE && dist[time[0]] + time[2] < dist[time[1]])
+                    dist[time[1]] =  dist[time[0]] + time[2];  
+            }
+            
+        }
+        
+        int max = Integer.MIN_VALUE;
+        for(int i=1; i <= N; i++){
+            max = Math.max(dist[i], max);
+        }
+        
+        return max == Integer.MAX_VALUE ? -1 : max;
+    }
+}
+
+
+//Time Complexity
+//O((E)(|V|-1))
+//O(n2)
