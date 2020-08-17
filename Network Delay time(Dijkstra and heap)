@@ -1,0 +1,35 @@
+class Solution {
+    public int networkDelayTime(int[][] times, int N, int K) {
+        
+        Map<Integer, HashMap<Integer, Integer>> adjMap = new HashMap<>();
+        boolean visited[] = new boolean[N+1];
+        
+        for(int t[] : times){
+            adjMap.putIfAbsent(t[0], new HashMap<>());
+            adjMap.get(t[0]).put(t[1], t[2]);
+        }
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b)-> a[0] - b[0]);
+        
+        pq.offer(new int[]{0,K});
+        
+        int res = 0;
+        
+        while(! pq.isEmpty()){
+            int curr[] = pq.poll();
+            int currNode = curr[1];
+            int currDis = curr[0];
+            if(visited[currNode])
+                continue;
+            visited[currNode] = true;
+            N--;
+            res = currDis;
+            if(adjMap.containsKey(currNode)){
+                for(int next : adjMap.get(currNode).keySet()){
+                    pq.offer(new int[]{currDis + adjMap.get(currNode).get(next), next});
+                }
+            }
+            
+        }
+        return N == 0 ? res : -1;
+    }
+}   //O(V logV)
