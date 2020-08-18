@@ -1,0 +1,77 @@
+class Solution {
+    public int numIslands(char[][] grid) {
+        
+        if(grid.length == 0 || grid[0].length == 0)
+            return 0;
+       
+        UnionFind uf = new UnionFind(grid);
+        int directions[][] = new int[][]{{-1,0},{1,0},{0,-1},{0,1}};
+        int coln = grid[0].length;
+        int rows = grid.length;
+        int rank[] = new int[rows*coln];
+      
+        for(int i=0; i < grid.length; i++){
+            for(int j=0; j < grid[0].length; j++){
+                if(grid[i][j] == '1'){
+                    for(int dir[] : directions){
+                      int x = i + dir[0];
+                      int y = j + dir[1];
+                      if(x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == '1'){
+                         int id1 = (i * coln) + j;
+                         int id2 = (x * coln) + y; 
+                         uf.union(id1, id2, rank); 
+                      }
+                   } 
+                    
+                }
+            }
+        }
+       return uf.noOfIslands; 
+    }
+}
+class UnionFind{
+    int parent[];
+    int rank[];
+    int noOfIslands = 0;
+    UnionFind(char[][] grid){
+        int m = grid.length;
+        int n = grid[0].length;
+        parent = new int[m*n];
+        rank = new int[m*n];
+        for(int i=0; i < m ;i++){
+            for(int j=0; j < n; j++){
+                if(grid[i][j] == '1'){
+                    int index = (i * n) + j;
+                    parent[index] = index;
+                    noOfIslands++;
+                }
+            }
+        }
+        
+    }
+    public void union(int x, int y, int[] rank){
+        int xset = find(x);
+        int yset = find(y);
+        if(xset != yset){
+            if(rank[yset] > rank[xset])
+                  parent[xset] = yset;
+            else if(rank[xset] > rank[yset])
+                  parent[yset] = xset;
+            else{
+                parent[xset] = yset;
+                rank[yset]++;
+            }
+                
+            noOfIslands--;
+        }    
+    }
+    public int find(int vertex){
+        if(parent[vertex] != vertex){
+            parent[vertex] = find(parent[vertex]);
+        }
+        return parent[vertex];
+    }
+}
+
+// Time Complexity : O(rows * col)
+// Space Complexity : O(rows * col)
