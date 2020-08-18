@@ -1,0 +1,37 @@
+class Solution {
+    public int numIslands(char[][] grid) {
+       
+        int noOfIslands = 0;
+        int directions[][] = new int[][]{{-1,0},{1,0},{0,-1},{0,1}};
+      
+        for(int i=0; i < grid.length; i++){
+            for(int j=0; j < grid[0].length; j++){
+                if(grid[i][j] == '1'){
+                    bfs(grid, directions, i, j);
+                    noOfIslands++;
+                }
+            }
+        }
+       return noOfIslands; 
+    }
+    private void bfs(char grid[][], int directions[][], int i, int j){
+        
+         Queue<int[]> q = new LinkedList<>();
+         q.offer(new int[]{i,j});
+        
+         while(! q.isEmpty()){
+            int[] curr = q.poll();
+            grid[curr[0]][curr[1]] = '0'; 
+            for(int dir[] : directions){
+                int x = curr[0] + dir[0];
+                int y = curr[1] + dir[1];
+                if(x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == '1'){
+                    q.offer(new int[]{x,y});
+                    grid[x][y] = '0';
+                }
+            } 
+         }     
+    }
+}
+// Time Complexity : O(rows * coln)
+// Space Complexity : O(rows * coln)
