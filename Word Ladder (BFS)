@@ -1,0 +1,50 @@
+class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        
+        Set<String> wordSet = new HashSet<>(wordList);
+        
+        if(! wordSet.contains(endWord))
+            return 0;
+        
+        Queue<String> q = new LinkedList<>();
+        
+        q.offer(beginWord);
+        wordSet.remove(beginWord);
+        wordSet.add(endWord);
+        
+        int level = 1;
+        
+        while(! q.isEmpty()){
+            int size = q.size();
+                for(int j=0; j < size; j++){
+                    String curr = q.poll();
+                    if(curr.equals(endWord))
+                        return level;
+                    for(String s : neighbours(curr, wordSet)){
+                        q.offer(s);
+                    }
+                }
+            level++; 
+        } 
+        return 0;
+    }
+    private List<String> neighbours(String str, Set<String> wordSet){
+        List<String> res = new ArrayList<>();
+        for(int i=0; i < str.length(); i++){
+            char arr[] = str.toCharArray();
+            for(char ch = 'a'; ch <= 'z'; ch++){
+                arr[i] = ch;
+                String word = new String(arr);
+                if(wordSet.remove(word)){
+                    res.add(word);
+                }
+                    
+            }
+        }
+        return res;
+    }
+}
+
+// Time Complexity : O(n2 * m)
+// where n-> size of wordList , m -> size of string
+// Space : O(n * m)
