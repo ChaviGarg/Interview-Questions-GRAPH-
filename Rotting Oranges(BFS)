@@ -1,0 +1,42 @@
+class Solution {
+     
+    public int orangesRotting(int[][] grid) {
+        
+        Queue<int[]> q = new LinkedList<>();
+        int directions[][] = new int[][]{{-1,0},{1,0},{0,1},{0,-1}};
+        int freshCount = 0; 
+        
+        for(int i=0; i < grid.length; i++){
+            for(int j=0; j < grid[0].length; j++){
+                if(grid[i][j] == 2)
+                    q.offer(new int[]{i,j});
+                if(grid[i][j] == 1)
+                    freshCount++;       
+            }
+        }
+        if(freshCount == 0)
+            return 0;
+        
+        int time = 0;
+        
+        while(! q.isEmpty()){
+            int size = q.size();
+            for(int i=0; i < size; i++){
+                int curr[] = q.poll();
+                for(int dir[] : directions){
+                    int x = curr[0] + dir[0];
+                    int y = curr[1] + dir[1];
+                    if(x >= 0 && y >= 0 && x < grid.length && y < grid[0].length && grid[x][y] == 1){
+                        grid[x][y] = 2;
+                        q.offer(new int[]{x,y});
+                        freshCount--;
+                    }
+                }
+            }
+            time++;
+        }
+       return freshCount == 0 ? time-1 : -1;
+    }
+} 
+// Time Complexity : O(r * c)
+// Space Complexity : O(r * c)
