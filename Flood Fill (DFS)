@@ -1,0 +1,19 @@
+class Solution {
+    public int[][] floodFill(int[][] image, int sr, int sc, int newColor) {
+        
+        dfs(image, sr, sc, image[sr][sc], newColor);
+        return image;
+    }
+    private void dfs(int[][] image, int i, int j, int color, int newColor){
+        
+        if(i >= 0 && j >= 0 && i < image.length && j < image[0].length && image[i][j] == color && image[i][j] != newColor){
+            image[i][j] = newColor;
+            dfs(image, i+1, j, color, newColor);
+            dfs(image, i, j+1, color, newColor);
+            dfs(image, i-1, j, color, newColor);
+            dfs(image, i, j-1, color, newColor);
+        }
+    }
+}
+// Time Complexity : O(r * c)
+// Space Complexity : O(r * c)
