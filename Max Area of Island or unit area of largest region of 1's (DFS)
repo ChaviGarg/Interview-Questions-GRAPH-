@@ -1,0 +1,30 @@
+class Solution {
+    int sum = 0;
+    public int maxAreaOfIsland(int[][] grid) {
+        
+        int max_sum = Integer.MIN_VALUE;
+        
+        for(int i=0; i < grid.length; i++){
+            for(int j=0; j < grid[0].length; j++){
+                if(grid[i][j] == 1){
+                    sum = 0;
+                    dfs(grid, i, j);
+                    max_sum = Math.max(max_sum, sum);
+                }
+            }
+        }
+        return max_sum == Integer.MIN_VALUE ? 0 : max_sum;
+    }
+    private void dfs(int grid[][], int x, int y){
+        
+        if(x >= 0 && y >=0 && x < grid.length && y < grid[0].length && grid[x][y] == 1){
+            sum++;
+            grid[x][y] = 0;
+            dfs(grid, x+1, y);
+            dfs(grid, x, y+1);
+            dfs(grid, x-1, y);
+            dfs(grid, x, y-1);
+        }
+    
+    }
+}
