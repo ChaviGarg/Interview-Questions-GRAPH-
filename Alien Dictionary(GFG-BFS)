@@ -1,0 +1,59 @@
+class Solution
+{
+    public String findOrder(String [] dict, int N, int K)
+    {
+        // Write your code here
+        String result = "";
+        HashMap<Character, List<Character>> adjMap = new HashMap<>();
+        Queue<Character> q = new LinkedList<>();
+        int[] indegree = new int[K];
+        
+        for(int i=0; i < K; i++){
+            adjMap.put((char)(i+48), new ArrayList<>());
+        }
+        for(int i=0; i < dict.length-1; i++){
+            String word1 = dict[i];
+            String word2 = dict[i+1];
+            int l=0;
+            if(word1.length() < word2.length())
+                l = word1.length();
+            else
+                l = word2.length();
+            
+            int count = 1;
+            for(int j=0; j < l; j++){
+                char c1 = word1.charAt(j);
+                char c2 = word2.charAt(j);
+                if(c1 != c2 && count == 1){
+                    if(adjMap.containsKey(c1))
+                       adjMap.get(c1).add(c2);
+                    indegree[c2-'a']++;
+                    count++;
+                    if(count > 1)
+                       break;
+                }
+                if(count > 1)
+                   break;
+            }    
+        }
+        for(int i=0; i < indegree.length; i++){
+            if(indegree[i] == 0)
+               q.offer((char)(i+48));
+        }
+        while(! q.isEmpty()){
+            char ch = q.poll();
+            result += ch;
+            if(adjMap.get(ch) == null)
+                continue;
+            for(char c : adjMap.get(ch)){
+                indegree[c-'0']--;
+                if(indegree[c - 'a'] == 0)
+                   result += c;
+            }
+            
+        }
+        
+        return result;
+        
+    }
+}
