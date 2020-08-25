@@ -1,0 +1,73 @@
+public class Solution {
+    /**
+     * @param words: a list of words
+     * @return: a string which is correct order
+     */
+    public String alienOrder(String[] words) {
+        // Write your code here
+        Set<Character> set = new HashSet<>();
+        
+        for(String word : words){
+            for(char c : word.toCharArray()){
+                set.add(c);
+            }
+        }
+        HashMap<Character, List<Character>> adjMap = new HashMap<>();
+        int indegree[] = new int[26];
+        String result = "";
+        
+        PriorityQueue<Character> pq = new PriorityQueue<>();
+        
+        for(char c : set){
+            adjMap.put(c, new ArrayList<>());
+        }
+        for(int i=0; i < words.length-1; i++){
+            String word1 = words[i];
+            String word2 = words[i+1];
+            int l=0;
+            if(word1.length() < word2.length())
+                l = word1.length();
+            else
+                l = word2.length();
+            
+            int count = 1;
+            for(int j=0; j < l; j++){
+                char c1 = word1.charAt(j);
+                char c2 = word2.charAt(j);
+                if(c1 != c2 && count == 1){
+                    if(adjMap.containsKey(c1))
+                       adjMap.get(c1).add(c2);
+                    indegree[c2-'a']++;
+                    count++;
+                    if(count > 1)
+                       break;
+                }
+                if(count > 1)
+                   break;
+            }    
+        }
+        for(int i=0; i < indegree.length; i++){
+            char c = (char)(i+97);
+            if(set.contains(c) && indegree[i] == 0){
+               pq.offer((char)(i+97)) ;  
+            }
+        }
+        
+        while(! pq.isEmpty()){
+            char ch = pq.poll();
+            result += ch;
+            if(adjMap.get(ch) == null)
+                continue;
+            for(char c : adjMap.get(ch)){
+                indegree[c-'a']--;
+                if(indegree[c - 'a'] == 0){
+                   pq.offer(c);
+                }   
+            }
+            
+        }
+        
+        return result.length() == set.size() ? result : "";
+    }
+    
+}
