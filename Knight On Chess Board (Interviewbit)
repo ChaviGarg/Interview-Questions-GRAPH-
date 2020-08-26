@@ -1,0 +1,31 @@
+public class Solution {
+    public int knight(int A, int B, int C, int D, int E, int F) {
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{C-1,D-1});
+        int directions[][] = new int[][]{{-2,-1},{-1,-2},{1,-2},{2,-1},{-2,1},{-1,2},{1,2},{2,1} }; 
+        boolean visited[][] = new boolean[A][B];
+        visited[C-1][D-1] = true;
+        int steps = 0;
+        
+        while(! q.isEmpty()){
+            int size = q.size();
+            for(int i=0; i < size; i++){
+                int curr[] = q.poll();
+                if(curr[0] == E-1 && curr[1] == F-1)
+                    return steps;
+                for(int dir[] : directions){
+                    int x = curr[0] + dir[0];
+                    int y = curr[1] + dir[1];
+                    if(x >= 0 && y >= 0 && x < A && y < B && !visited[x][y]){
+                        visited[x][y] = true;
+                        q.offer(new int[]{x,y});
+                    }
+                }
+            }
+            steps++;
+        }
+        return -1;
+    }
+}
+// Time Complexity : O(n2)-> worst case all cells will be visited
+// Space Complexity : O(n2)-> worst case(visited array and queue)
