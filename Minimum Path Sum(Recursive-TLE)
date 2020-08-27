@@ -1,0 +1,17 @@
+class Solution {
+    public int minPathSum(int[][] grid) {
+        
+        return helper(0, 0, grid);
+      
+    }
+    private int helper(int x, int y, int grid[][]){
+        
+        if(x >= grid.length || y >= grid[0].length) return Integer.MAX_VALUE;
+        if(x == grid.length-1 && y == grid[0].length-1) return grid[x][y];
+
+        return grid[x][y] + Math.min(helper(x+1, y, grid) ,helper(x, y+1, grid));
+    }
+} 
+
+// Time complexity : O(2^n)
+// Space Complexity : O(n*n)
