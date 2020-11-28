@@ -23,6 +23,8 @@ class Solution {
             visited[currNode] = true;
             N--;
             res = currDis;
+            if(N == 0)
+                return res;
             if(adjMap.containsKey(currNode)){
                 for(int next : adjMap.get(currNode).keySet()){
                     pq.offer(new int[]{currDis + adjMap.get(currNode).get(next), next});
@@ -30,6 +32,6 @@ class Solution {
             }
             
         }
-        return N == 0 ? res : -1;
+        return -1;
     }
 }   //O(V logV)
