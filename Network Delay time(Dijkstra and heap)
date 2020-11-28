@@ -1,3 +1,5 @@
+I think bfs and djikstra are very similar problems. It's just that djikstra cost is different compared with bfs, so use priorityQueue instead a Queue for a standard bfs search.
+
 class Solution {
     public int networkDelayTime(int[][] times, int N, int K) {
         
