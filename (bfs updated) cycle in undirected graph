@@ -1,0 +1,51 @@
+public class Solution {
+    public int solve(int A, int[][] B) {
+        
+        Map<Integer, List<Integer>> adjMap = new HashMap<>();
+        boolean visited[] = new boolean[A+1];
+        
+        for(int i=1; i <= A; i++){
+            adjMap.put(i, new ArrayList<>());
+        }
+        for(int t[] : B){
+            adjMap.get(t[0]).add(t[1]);
+            adjMap.get(t[1]).add(t[0]);
+        }
+        int[] parent = new int[A+1];
+        Arrays.fill(parent, -1);
+        for(int i=1; i <= A; i++){
+            visited = new boolean[A+1];
+            boolean isCycle = bfs(i, visited, adjMap, parent);
+            if(isCycle)
+                return 1;
+        }
+        return 0;
+    }
+    private boolean bfs(int x, boolean[] visited,  Map<Integer, List<Integer>> adjMap, int[] parent){
+        
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(x);
+        
+        while(! q.isEmpty()){
+            int n = q.poll();
+            if(visited[n])
+                return true;
+            visited[n] = true;
+            List<Integer> neighbors = adjMap.get(n);
+            if(neighbors != null){
+                for(int nbr : neighbors){
+                    if(parent[nbr] == n || parent[n] == nbr)
+                         continue;
+                    if(! visited[nbr]){
+                        q.offer(nbr);
+                        parent[nbr] = n;
+                    }        
+                }
+            }
+        }
+       return false; 
+        
+    }
+   
+    
+}
