@@ -1,51 +1,42 @@
 class Solution {
     public boolean isBipartite(int[][] graph) {
-        
-        int colour[] = new int[graph.length];
-        Arrays.fill(colour, -1);
-        
-        Map<Integer, List<Integer>> adjMap = new HashMap<>();
-        
-        for(int i=0; i < graph.length; i++){
-            adjMap.put(i, new ArrayList<>());
-        }
-        int index = 0;
-        for(int edge[] : graph){
-            for(int i=0; i<edge.length; i++){
-                adjMap.get(index).add(edge[i]);
-            }
-            index++;
-        }
-        for(int i : adjMap.keySet()){
-            
-               if(colour[i] == -1){
-                    boolean isBipartite = checkBipartite(adjMap, colour, i);
-                    if(! isBipartite) 
-                        return false;  
-               }    
-        }
-       
-        return true;
-    }
-    boolean checkBipartite(Map<Integer, List<Integer>> adjMap, int colour[], int x){
-        
-        Queue<Integer> q = new LinkedList<>();
-        
-        q.offer(x);
-        colour[x] = 1;
-       
-        while(! q.isEmpty()){
-            int n = q.poll();
-            List<Integer> neighbours = adjMap.get(n);
-            for(int neighbour : neighbours){
-                if(colour[neighbour] == -1){
-                    colour[neighbour] = Math.abs(colour[n] - 1);
-                    q.offer(neighbour);
-                }    
-                else if(colour[neighbour] != -1 && colour[neighbour] == colour[n])
+
+        int color[] = new int[graph.length];
+        Arrays.fill(color, -1);
+
+        Queue<Integer> queue = new LinkedList<>();
+
+        for(int u=0; u < graph.length; u++){
+            if(color[u] == -1){
+                queue.offer(u);
+                boolean oddCycle = bfs(graph, color, queue);
+                if(oddCycle)
                     return false;
             }
         }
-       return true; 
+        return true;
+
     }
-}  // Time Complexity -> O( V + E)
+    private boolean bfs(int[][] graph, int color[], Queue<Integer> queue){
+        while(! queue.isEmpty()){
+            int u = queue.poll();
+            if(color[u] == -1)
+                color[u] = 0;
+
+            int[] neighbors = graph[u];
+            if(neighbors != null){
+                for(int v : neighbors){
+                    if(color[v] == -1){
+                        color[v] = Math.abs(color[u]-1);
+                        queue.offer(v);
+                    }
+                    else if(color[u] == color[v])
+                        return true;
+                    }
+            }
+
+        }
+        return false;
+   }
+}
+  // Time Complexity -> O( V + E)
