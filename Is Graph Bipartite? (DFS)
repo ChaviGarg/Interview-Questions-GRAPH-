@@ -1,55 +1,36 @@
 class Solution {
     public boolean isBipartite(int[][] graph) {
-        
-        int colour[] = new int[graph.length];
-        boolean visited[] = new boolean[graph.length];
-        Arrays.fill(colour, -1);
-        
-        Map<Integer, List<Integer>> adjMap = new HashMap<>();
-        
-        for(int i=0; i < graph.length; i++){
-            adjMap.put(i, new ArrayList<>());
-        }
-        int index = 0;
-        for(int edge[] : graph){
-            for(int i=0; i<edge.length; i++){
-                adjMap.get(index).add(edge[i]);
+
+        int color[] = new int[graph.length];
+        Arrays.fill(color, -1);
+
+        for(int u=0; u < graph.length; u++){
+            if(color[u] == -1){
+                boolean oddCycle = dfs(u, graph, color);
+                if(oddCycle)
+                    return false;
             }
-            index++;
         }
-        for(int i : adjMap.keySet()){
-            
-               if(colour[i] == -1){
-                    boolean isBipartite = checkBipartite(adjMap, colour, i, -1, visited);
-                    if(! isBipartite) 
-                        return false;  
-               }    
-        }
-       
         return true;
+
     }
-    boolean checkBipartite(Map<Integer, List<Integer>> adjMap, int colour[], int x, int parent, boolean visited[]){
-        
-        if(colour[x] == -1)
-             colour[x] = 1;
-    
-        List<Integer> neighbours = adjMap.get(x);
-    
-        for(int neighbour : neighbours){
-            if(! visited[neighbour]){
-            visited[neighbour] = true;    
-            if(colour[neighbour] == -1){
-                colour[neighbour] = Math.abs(colour[x] - 1);
-            }   
-                boolean isBipartite = checkBipartite(adjMap, colour, neighbour, x, visited);
-                if(! isBipartite) 
-                        return false; 
+    private boolean dfs(int u, int[][] graph, int color[]){
+        if(color[u] == -1)
+            color[u] = 0;
+        int[] neighbours = graph[u];
+        if(neighbours != null){
+            for(int v : neighbours){
+                if(color[v] == -1){
+                    color[v] = Math.abs(color[u]-1);
+                    boolean oddLengthCycle = dfs(v, graph, color);
+                    if(oddLengthCycle)
+                       return true;
+                }else if(color[v] == color[u]){
+                    return true;
+                }
             }
-            else if(parent != -1 && (colour[x] == colour[neighbour])){
-                return false;
-            }
-               
         }
-       return true; 
+        //color[u] = -1;
+        return false;
     }
 }
